@@ -17,11 +17,23 @@ describe("/api/topics", () => {
         .get("/api/topics")
         .expect(200)
         .then((res) => {
-            expect(res.body.topics.toBeInstanceOf(Array));
-            res.body.topics.forEach((topic).toMatchObject(
-                {slug: expect.any(String),
-                    description: expect.any(string)
-                }))
+            expect(res.body.topics).toBeInstanceOf(Array);
+            res.body.topics.forEach((topic) => expect(topic).toMatchObject(
+                {
+                    slug: expect.any(String),
+                    description: expect.any(String)
+                }
+                ))
+        })
+    })
+})
+describe("/api/invalid_endpoint", () => {
+    test("error message 404: responds with an error message", () => {
+        return request(app)
+        .get("/api/invalid_endpoint")
+        .expect(404)
+        .then((res) => {
+            expect(res.body.message).toBe("Status code 404: not found")
         })
     })
 })
