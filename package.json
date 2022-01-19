@@ -18,6 +18,11 @@
   "bugs": {
     "url": "https://github.com/northcoders/be-nc-news/issues"
   },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "jest-sorted"
+    ]
+  },
   "homepage": "https://github.com/northcoders/be-nc-news#readme",
   "devDependencies": {
     "jest": "^27.4.7",

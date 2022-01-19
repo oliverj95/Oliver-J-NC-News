@@ -1,4 +1,9 @@
-const { selectTopics, selectArticlesById } = require("../models/app.model");
+const {
+  selectTopics,
+  selectArticlesById,
+  updateById,
+  selectArticles,
+} = require("../models/app.model");
 
 exports.getTopics = (req, res, next) => {
   selectTopics()
@@ -8,9 +13,28 @@ exports.getTopics = (req, res, next) => {
     .catch(next);
 };
 exports.getArticlesById = (req, res, next) => {
-const {article_id} = req.params
-selectArticlesById(article_id)
-.then((article) => {
-    res.status(200).send({article: article})
-})
+  const { article_id } = req.params;
+  selectArticlesById(article_id)
+    .then((article) => {
+      res.status(200).send({ article: article });
+    })
+    .catch(next);
+};
+
+exports.patchArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  updateById(article_id, inc_votes)
+    .then((updatedArticle) => {
+      res.status(201).send({ updatedArticle: updatedArticle });
+    })
+    .catch(next);
+};
+
+exports.getArticles = (req, res, next) => {
+  const{ sort_by } = req.query
+  selectArticles(sort_by)
+  .then((articles) => {
+    res.status(200).send({ articles: articles });
+  });
 };
