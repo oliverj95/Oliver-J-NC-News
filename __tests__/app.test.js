@@ -120,7 +120,7 @@ describe("PATCH /api/:article_id", () => {
 });
 
 describe("GET/api/articles/", () => {
-  test.only("status 200: returns an array of articles", () => {
+  test("status 200: returns an array of articles", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -140,12 +140,62 @@ describe("GET/api/articles/", () => {
         );
       });
   });
-  test.only("status 200: returns an array of articles, sorted by a query, with created_at as default", () => {
+  test("status 200: returns an array of articles, sorted by a query, with created_at as default", () => {
     return request(app)
       .get("/api/articles?sort_by=title")
       .expect(200)
       .then((res) => {
-        expect(res.body.articles).toBeSortedBy("title");
+        expect(res.body.articles).toBeSortedBy("title", { descending: true });
       });
   });
+  test("status 200: returns an array of articles, ordered by a query", () => {
+    return request(app)
+      .get("/api/articles?order_by=ASC")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted({ coerce: true });
+      });
+  });
+  test("status 200: returns an array of article, filtered by query", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles.length).toBe(11);
+        expect(
+          res.body.articles.every((article) => article.topic === "mitch")
+        ).toBe(true);
+      });
+  });
+
+  describe("GET /api/articles/ - error handling", () => {
+    test("status 400: invalid sort query input", () => {
+      return request(app)
+        .get("/api/articles?sort_by=invalidColumnName")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.message)
+          .toBe("Bad request")
+        });
+    });
+ 
+  test("status 400: invalid order query input", () => {
+    return request(app)
+      .get("/api/articles?order_by=invalidOrderQuery")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.message)
+        .toBe("Bad request")
+      });
+  });
+  test("status 404: invalid topic input", () => {
+    return request(app)
+      .get("/api/articles?topic=invalidTopic")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.message)
+        .toBe("Status code 404: topic not found")
+      });
+  }); 
+});
 });

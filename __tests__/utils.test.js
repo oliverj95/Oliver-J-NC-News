@@ -1,10 +1,17 @@
-const getCount = require("../utils/index")
+const checkExists = require("../utils/index")
+const db = require("../db/connection")
 
-describe("getCount", () => {
+
+describe("checkExists", () => {
     test("returns a number", () => {
-        expect(typeof getCount(1)).toBe("number")
-    })
-    test("returns the comment count on an article ", () => {
-        expect(getCount(1)).toBe(11)
+        checkExists(articles, topic, cats)
+        expect(res.body.articles).toEqual({
+            title: 'UNCOVERED: catspiracy to bring down democracy',
+            topic: 'cats',
+            author: 'rogersop',
+            body: 'Bastet walks amongst us, and the cats are taking arms!',
+            created_at: new Date(1596464040000),
+            votes: 0
+          })
     })
 })

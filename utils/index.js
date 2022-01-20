@@ -1,10 +1,15 @@
 const db = require("../db/connection")
+const format = require("pg-format")
 
-function getCount (id) {
-return db.query(`SELECT COUNT(*)::INT FROM comments WHERE article_id =$1;`, [id])
-.then((result) => {
-    console.log(result.rows)
-})
+const checkExists = async(table, topic, value) => {
+const queryStr = format("SELECT * FROM %I WHERE %I = $1;", table, topic)
+
+const dbOutput = await db.query(queryStr, [value]);
+
+if(dbOutput.rows.length ===0) {
+    return Promise.reject({ message: 'Status code 404: not found' });
+}
 }
 
-module.exports = getCount;
+
+module.exports = checkExists;

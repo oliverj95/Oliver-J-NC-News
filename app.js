@@ -26,7 +26,12 @@ app.use((err, req, res, next) => {
   console.log(err);
   if (err.status && err.message) {
     res.status(err.status).send({ message: err.message });
-  } else if (err.code === "22P02" || err.code === "23502") {
+  } else if (
+    err.code === "22P02" ||
+    err.code === "23502" ||
+    err.code === "42703" ||
+    err.code === "42601"
+  ) {
     res.status(400).send({ message: "Bad request" });
   } else {
     res.status(500).send({ message: "Internal Server Error" });
@@ -34,3 +39,4 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+
