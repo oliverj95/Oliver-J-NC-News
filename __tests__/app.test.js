@@ -174,28 +174,73 @@ describe("GET/api/articles/", () => {
         .get("/api/articles?sort_by=invalidColumnName")
         .expect(400)
         .then((res) => {
-          expect(res.body.message)
-          .toBe("Bad request")
+          expect(res.body.message).toBe("Bad request");
         });
     });
- 
-  test("status 400: invalid order query input", () => {
+
+    test("status 400: invalid order query input", () => {
+      return request(app)
+        .get("/api/articles?order_by=invalidOrderQuery")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.message).toBe("Bad request");
+        });
+    });
+    test("status 404: invalid topic input", () => {
+      return request(app)
+        .get("/api/articles?topic=invalidTopic")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.message).toBe("Status code 404: topic not found");
+        });
+    });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("status 200: returns an array of comments", () => {
     return request(app)
-      .get("/api/articles?order_by=invalidOrderQuery")
-      .expect(400)
+      .get("/api/articles/1/comments")
+      .expect(200)
       .then((res) => {
-        expect(res.body.message)
-        .toBe("Bad request")
+        expect(res.body.comments).toBeInstanceOf(Array);
+        res.body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+          });
+        });
       });
   });
-  test("status 404: invalid topic input", () => {
-    return request(app)
-      .get("/api/articles?topic=invalidTopic")
-      .expect(404)
+  describe("GET /api/articles/:article_id/comments - error handling", () => {
+    test("status 200: returns an empty array if article has no comments", () => {
+      return request(app)
+      .get("/api/articles/8/comments")
+      .expect(200)
       .then((res) => {
-        expect(res.body.message)
-        .toBe("Status code 404: topic not found")
-      });
-  }); 
+        expect(res.body.comments).toBeInstanceOf(Array)
+      })
+    })
+
+    test("status 404: invalid sort query input", () => {
+      return request(app)
+        .get("/api/articles/80808/comments")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.message).toBe("No article found for article_id 80808");
+        });
+    });
+    test("status 400: invalid query type input", () => {
+      return request(app)
+        .get("/api/articles/invalidInput/comments")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.message).toBe("Bad request");
+        });
+    } )
+  })
 });
-});
+

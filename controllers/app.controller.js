@@ -2,7 +2,8 @@ const {
   selectTopics,
   selectArticlesById,
   updateById,
-  selectArticles,
+  selectArticles, 
+  selectCommentsByArticleId
 } = require("../models/app.model");
 
 exports.getTopics = (req, res, next) => {
@@ -32,14 +33,22 @@ exports.patchArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const { sort_by} = req.query
-  const {order_by} = req.query
-  const {topic } = req.query
+  const { sort_by } = req.query
+  const { order_by } = req.query
+  const { topic } = req.query
 
   selectArticles(sort_by, order_by, topic)
   .then((articles) => {
-    console.log(articles)
     res.status(200).send({ articles: articles });
   })
   .catch(next)
 };
+
+exports.getCommentsByArticleId = (req, res, next) => {
+  const {article_id} = req.params
+selectCommentsByArticleId(article_id)
+.then((comments) => {
+  res.status(200).send({comments: comments})
+})
+.catch(next)
+}

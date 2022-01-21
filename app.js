@@ -5,7 +5,7 @@ const {
   getTopics,
   getArticlesById,
   patchArticleById,
-  getArticles,
+  getArticles, getCommentsByArticleId
 } = require("./controllers/app.controller");
 
 app.use(express.json());
@@ -18,12 +18,13 @@ app.get("/api/articles", getArticles);
 
 app.patch(`/api/articles/:article_id`, patchArticleById);
 
+app.get(`/api/articles/:article_id/comments`, getCommentsByArticleId);
+
 app.all("*", (req, res) => {
   res.status(404).send({ message: "Status code 404: not found" });
 });
 
 app.use((err, req, res, next) => {
-  console.log(err);
   if (err.status && err.message) {
     res.status(err.status).send({ message: err.message });
   } else if (
