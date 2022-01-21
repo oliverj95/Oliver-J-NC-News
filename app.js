@@ -5,7 +5,7 @@ const {
   getTopics,
   getArticlesById,
   patchArticleById,
-  getArticles, getCommentsByArticleId
+  getArticles, getCommentsByArticleId, postComment
 } = require("./controllers/app.controller");
 
 app.use(express.json());
@@ -20,11 +20,14 @@ app.patch(`/api/articles/:article_id`, patchArticleById);
 
 app.get(`/api/articles/:article_id/comments`, getCommentsByArticleId);
 
+app.post("/api/articles/:article_id/comments", postComment)
+
 app.all("*", (req, res) => {
   res.status(404).send({ message: "Status code 404: not found" });
 });
 
 app.use((err, req, res, next) => {
+  console.log(err)
   if (err.status && err.message) {
     res.status(err.status).send({ message: err.message });
   } else if (
@@ -34,7 +37,11 @@ app.use((err, req, res, next) => {
     err.code === "42601"
   ) {
     res.status(400).send({ message: "Bad request" });
-  } else {
+  }
+  else if (err.code === "23503") {
+    res.status(404).send({ message: "No article found" });
+  }
+  else {
     res.status(500).send({ message: "Internal Server Error" });
   }
 });

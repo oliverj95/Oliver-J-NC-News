@@ -3,7 +3,7 @@ const {
   selectArticlesById,
   updateById,
   selectArticles, 
-  selectCommentsByArticleId
+  selectCommentsByArticleId, postCommentById
 } = require("../models/app.model");
 
 exports.getTopics = (req, res, next) => {
@@ -51,4 +51,15 @@ selectCommentsByArticleId(article_id)
   res.status(200).send({comments: comments})
 })
 .catch(next)
+}
+
+exports.postComment = (req, res, next) => {
+  const { article_id } = req.params;
+  const { username } = req.body;
+  const { body } = req.body;
+  postCommentById(article_id, username, body)
+  .then((newComment) => {
+res.status(201).send({newComment: newComment})
+  })
+  .catch(next)
 }

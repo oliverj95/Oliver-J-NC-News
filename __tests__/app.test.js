@@ -218,19 +218,21 @@ describe("GET /api/articles/:article_id/comments", () => {
   describe("GET /api/articles/:article_id/comments - error handling", () => {
     test("status 200: returns an empty array if article has no comments", () => {
       return request(app)
-      .get("/api/articles/8/comments")
-      .expect(200)
-      .then((res) => {
-        expect(res.body.comments).toBeInstanceOf(Array)
-      })
-    })
+        .get("/api/articles/8/comments")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comments).toBeInstanceOf(Array);
+        });
+    });
 
     test("status 404: invalid sort query input", () => {
       return request(app)
         .get("/api/articles/80808/comments")
         .expect(404)
         .then((res) => {
-          expect(res.body.message).toBe("No article found for article_id 80808");
+          expect(res.body.message).toBe(
+            "No article found for article_id 80808"
+          );
         });
     });
     test("status 400: invalid query type input", () => {
@@ -240,7 +242,74 @@ describe("GET /api/articles/:article_id/comments", () => {
         .then((res) => {
           expect(res.body.message).toBe("Bad request");
         });
-    } )
-  })
+    });
+  });
 });
 
+describe("POST /api/articles/article:_id/comments", () => {
+  test("status 201: returns a response of a successfully posted comment", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({
+        username: "icellusedkars",
+        body: "Pretty, pretty, pretty good!",
+      })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.newComment).toMatchObject({
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+        });
+      });
+  });
+  describe("POST /api/articles/article:_id/comments - error handling", () => {
+    test("status 400: invalid article_id input", () => {
+      return request(app)
+      .post("/api/articles/invalidInput/comments")
+      .send({
+        username: "butter_bridge",
+        body: "Random comment"
+      })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.message).toBe("Bad request");
+        });
+    })
+    test("status 400: malformed body ", () => {
+      return request(app)
+      .post("/api/articles/1/comments")
+      .send({})
+        .expect(400)
+        .then((res) => {
+          expect(res.body.message).toBe("Bad request");
+        });
+    })
+     test("status 400: schema validation error", () => {
+      return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        hello: "butter_bridge",
+        hello: "Random comment"
+    })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.message).toBe("Bad request");
+        });
+    })
+    test("status 404: article_id does not exist", () => {
+      return request(app)
+      .post("/api/articles/8080808/comments")
+        .expect(404)
+        .send({
+          username: "butter_bridge",    
+          body: "Random comment"
+        })
+        .then((res) => {
+          expect(res.body.message).toBe("No article found");
+        });
+    })
+  })
+});
