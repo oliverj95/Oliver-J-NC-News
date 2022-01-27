@@ -313,3 +313,14 @@ describe("POST /api/articles/article:_id/comments", () => {
     })
   })
 });
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test("status 204: deletes the comment  and has no content in the comment_id ", () => {
+return request(app)
+.delete("/api/comments/1")
+.expect(204)
+})
+
+ })
+
+ 
