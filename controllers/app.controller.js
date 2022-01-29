@@ -3,8 +3,10 @@ const {
   selectArticlesById,
   updateById,
   selectArticles, 
-  selectCommentsByArticleId, postCommentById, deleteCommentById
+  selectCommentsByArticleId, postCommentById, deleteCommentById, retrieveEndpoints
 } = require("../models/app.model");
+
+const endpoints = require("../endpoints.json")
 
 exports.getTopics = (req, res, next) => {
   selectTopics()
@@ -70,4 +72,10 @@ exports.deleteComment = (req, res, next) => {
   .then(() => {
     res.status(204).send({})
   })
+  .catch(next)
+}
+
+exports.getEndpoints = (req, res, next) => {
+res.status(200).send(endpoints)
+
 }

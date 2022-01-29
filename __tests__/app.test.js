@@ -7,6 +7,7 @@ const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 
 const app = require("../app");
+const endpoints = require("../endpoints.json");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -35,7 +36,7 @@ describe("/api/invalid_endpoint", () => {
       .get("/api/invalid_endpoint")
       .expect(404)
       .then((res) => {
-        expect(res.body.message).toBe("Status code 404: not found");
+        expect(res.body.message).toBe("Status code 404: Not Found");
       });
   });
 });
@@ -66,7 +67,7 @@ describe("GET api/articles/:article_id", () => {
         expect(res.body.message).toBe("Bad request");
       });
   });
-  test("status 404: not found", () => {
+  test("status 404: Not Found", () => {
     return request(app)
       .get("/api/articles/99999")
       .expect(404)
@@ -191,7 +192,7 @@ describe("GET/api/articles/", () => {
         .get("/api/articles?topic=invalidTopic")
         .expect(404)
         .then((res) => {
-          expect(res.body.message).toBe("Status code 404: topic not found");
+          expect(res.body.message).toBe("Status code 404: topic Not Found");
         });
     });
   });
@@ -268,59 +269,83 @@ describe("POST /api/articles/article:_id/comments", () => {
   describe("POST /api/articles/article:_id/comments - error handling", () => {
     test("status 400: invalid article_id input", () => {
       return request(app)
-      .post("/api/articles/invalidInput/comments")
-      .send({
-        username: "butter_bridge",
-        body: "Random comment"
-      })
+        .post("/api/articles/invalidInput/comments")
+        .send({
+          username: "butter_bridge",
+          body: "Random comment",
+        })
         .expect(400)
         .then((res) => {
           expect(res.body.message).toBe("Bad request");
         });
-    })
+    });
     test("status 400: malformed body ", () => {
       return request(app)
-      .post("/api/articles/1/comments")
-      .send({})
+        .post("/api/articles/1/comments")
+        .send({})
         .expect(400)
         .then((res) => {
           expect(res.body.message).toBe("Bad request");
         });
-    })
-     test("status 400: schema validation error", () => {
+    });
+    test("status 400: schema validation error", () => {
       return request(app)
-      .post("/api/articles/1/comments")
-      .send({
-        hello: "butter_bridge",
-        hello: "Random comment"
-    })
+        .post("/api/articles/1/comments")
+        .send({
+          hello: "butter_bridge",
+          hello: "Random comment",
+        })
         .expect(400)
         .then((res) => {
           expect(res.body.message).toBe("Bad request");
         });
-    })
+    });
     test("status 404: article_id does not exist", () => {
       return request(app)
-      .post("/api/articles/8080808/comments")
+        .post("/api/articles/8080808/comments")
         .expect(404)
         .send({
-          username: "butter_bridge",    
-          body: "Random comment"
+          username: "butter_bridge",
+          body: "Random comment",
         })
         .then((res) => {
           expect(res.body.message).toBe("No article found");
         });
+    });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("status 204: deletes the comment  and has no content in the comment_id ", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  describe("DELETE /api/comments/:comment_id - error handling", () => {
+    test("status 400: invalid comment id input", () => {
+      return request(app)
+        .delete("/api/comments/invalid_comment_id")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.message).toBe("Bad request");
+        });
+    });
+    test("status 404: comment id does not exist", () => {
+      return request(app)
+        .delete("/api/comments/90909090")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.message).toBe("Not Found");
+        });
+    });
+  });
+});
+
+describe.only("GET /api", () => {
+  test("status 200 and responds with a  JSON of all endpoints", () => {
+    return request(app)
+    .get("/api")
+    .expect(200)
+    .then((res) => {
+      expect(res.body).toEqual(endpoints)
     })
   })
 });
-
-describe.only("DELETE /api/comments/:comment_id", () => {
-  test("status 204: deletes the comment  and has no content in the comment_id ", () => {
-return request(app)
-.delete("/api/comments/1")
-.expect(204)
-})
-
- })
-
- 

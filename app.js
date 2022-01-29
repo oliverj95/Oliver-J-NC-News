@@ -5,7 +5,7 @@ const {
   getTopics,
   getArticlesById,
   patchArticleById,
-  getArticles, getCommentsByArticleId, postComment, deleteComment
+  getArticles, getCommentsByArticleId, postComment, deleteComment, getEndpoints
 
 } = require("./controllers/app.controller");
 
@@ -25,8 +25,10 @@ app.post("/api/articles/:article_id/comments", postComment)
 
 app.delete("/api/comments/:comment_id", deleteComment)
 
+app.get("/api", getEndpoints)
+
 app.all("*", (req, res) => {
-  res.status(404).send({ message: "Status code 404: not found" });
+  res.status(404).send({ message: "Status code 404: Not Found" });
 });
 
 app.use((err, req, res, next) => {
