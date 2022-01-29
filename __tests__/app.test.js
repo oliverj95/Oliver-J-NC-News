@@ -339,13 +339,39 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
-describe.only("GET /api", () => {
+describe("GET /api", () => {
   test("status 200 and responds with a  JSON of all endpoints", () => {
     return request(app)
-    .get("/api")
-    .expect(200)
-    .then((res) => {
-      expect(res.body).toEqual(endpoints)
-    })
+      .get("/api")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual(endpoints);
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("status 200: responds with an array of objects containing a single key, username", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.users).toBeInstanceOf(Array);
+        res.body.users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+          });
+        });
+      });
   })
+  describe("GET /api/users - error handling", () => {
+    test("status 404: invalid URL input", () => {
+      return request(app)
+      .get("/api/aUser")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.message).toBe("Status code 404: Not Found")
+      })
+    })
+  });
 });

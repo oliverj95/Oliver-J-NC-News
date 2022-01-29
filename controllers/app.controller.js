@@ -3,7 +3,7 @@ const {
   selectArticlesById,
   updateById,
   selectArticles, 
-  selectCommentsByArticleId, postCommentById, deleteCommentById, retrieveEndpoints
+  selectCommentsByArticleId, postCommentById, deleteCommentById, retrieveEndpoints, retrieveUsers
 } = require("../models/app.model");
 
 const endpoints = require("../endpoints.json")
@@ -78,4 +78,12 @@ exports.deleteComment = (req, res, next) => {
 exports.getEndpoints = (req, res, next) => {
 res.status(200).send(endpoints)
 
+}
+
+exports.getUsers = (req, res, next) => {
+retrieveUsers()
+.then((users) => {
+  res.status(200).send({users: users})
+})
+  .catch(next)
 }

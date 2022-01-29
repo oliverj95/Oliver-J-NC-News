@@ -1,7 +1,6 @@
 const db = require("../db/connection");
 const format = require("pg-format");
 
-
 exports.selectTopics = () => {
   return db.query(`SELECT * FROM topics`).then((topics) => {
     return topics.rows;
@@ -130,21 +129,24 @@ exports.postCommentById = (article_id, username, body) => {
 };
 
 exports.deleteCommentById = (comment_id) => {
-  return db.query(
-    `DELETE FROM comments
+  return db
+    .query(
+      `DELETE FROM comments
     WHERE comment_id=$1 RETURNING *;`,
-    [comment_id]
-  )
-  .then((result) => {
-    if (result.rows.length === 0) {
-      return Promise.reject({
-        status: 404,
-        message: "Not Found"
-      })
-    }
-  })
+      [comment_id]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          message: "Not Found",
+        });
+      }
+    });
 };
 
-// exports.retrieveEndpoints = () => {
-//   console.log(endpoints)
-// }
+exports.retrieveUsers = () => {
+  return db.query(`SELECT username FROM users`).then((users) => {
+    return users.rows;
+  });
+};
