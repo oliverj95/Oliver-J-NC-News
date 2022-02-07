@@ -146,7 +146,7 @@ exports.deleteCommentById = (comment_id) => {
 };
 
 exports.retrieveUsers = () => {
-  return db.query(`SELECT username FROM users`).then((users) => {
+  return db.query(`SELECT username, avatar_url, name FROM users`).then((users) => {
     return users.rows;
   });
 };

@@ -360,6 +360,8 @@ describe("GET /api/users", () => {
         res.body.users.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
+            avatar_url: expect.any(String),
+            name: expect.any(String)
           });
         });
       });
