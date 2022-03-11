@@ -3,9 +3,7 @@
 ## This is an informative guide on how to navigate the API
 
 1. Link to the live API: https://oliver-j-nc-news.herokuapp.com/api
-  - This allows you to access a list of endpoints, queries, and looks like the below. 
-
-  e.g.
+  - This allows you to access a list of endpoints and queries.
   
 ## To clone this repo
   Please fork or clone the direct link to your machine
