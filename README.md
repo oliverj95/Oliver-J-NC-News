@@ -102,18 +102,4 @@ $ npm run dev
 ### `GET /api/users`
 - Retrieves a list of users currently registered to the site.`
 
-### `GET /api/users/:username`
-- Retrieves an individual user object `
-- `:username` must be valid and exist
-- Example response body:
-```
-{
-	"user": {
-		"username": "jessjelly",
-		"avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/4/4f/MR_JELLY_4A.jpg/revision/latest?cb=20180104121141",
-		"name": "Jess Jelly"
-	}
-}
-```
----
-Copyright (c) 2022
+
